@@ -356,7 +356,7 @@ class AlphaBetaPlayer(IsolationPlayer):
         try:
             # The try/except block will automatically catch the exception
             # raised when the timer is about to expire.
-            depth = 0
+            depth = 1
             while (depth < float("inf")):
                 best_move = self.alphabeta(game, depth)
                 depth = depth + 1
