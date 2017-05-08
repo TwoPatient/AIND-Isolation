@@ -376,5 +376,82 @@ class AlphaBetaPlayer(IsolationPlayer):
         if self.time_left() < self.TIMER_THRESHOLD:
             raise SearchTimeout()
 
-        # TODO: finish this function!
-        raise NotImplementedError
+        bestmove = (-1, -1)
+        bestvalue = float("-inf")
+
+        legal_moves = game.get_legal_moves()
+        if not legal_moves:
+            return bestmove
+
+        for move in legal_moves:
+            v = self.min_value(game.forecast_move(move), depth - 1, alpha, beta)
+            if (v > bestvalue):
+                bestvalue, bestmove = v, move
+        
+        return bestmove
+
+    def max_value(self, game, depth, alpha, beta):
+        """Parameters
+        ----------
+        game : isolation.Board
+            An instance of the Isolation game `Board` class representing the
+            current game state
+
+        depth : int
+            Depth is an integer representing the maximum number of plies to
+            search in the game tree before aborting
+
+        Returns
+        -------
+        float
+            Min-value as in minimax algorithm"""
+
+        # Terminal Test
+        if self.time_left() < self.TIMER_THRESHOLD:
+            raise SearchTimeout()
+        if (depth == 0):
+            return self.score(game, self)
+        legal_moves = game.get_legal_moves()
+        if not legal_moves:
+            return game.utility(self)
+
+        v = float("-inf")
+        for move in legal_moves:
+            v = max(v, self.min_value(game.forecast_move(move), depth - 1, alpha, beta))
+            if (v >= beta):
+                return v
+            alpha = max(alpha, v)
+        return v
+
+    def min_value(self, game, depth, alpha, beta):
+        """Parameters
+        ----------
+        game : isolation.Board
+            An instance of the Isolation game `Board` class representing the
+            current game state
+
+        depth : int
+            Depth is an integer representing the maximum number of plies to
+            search in the game tree before aborting
+
+        Returns
+        -------
+        float
+            Max-value as in Minimax algorithm"""
+
+        # Terminal Test
+        if self.time_left() < self.TIMER_THRESHOLD:
+            raise SearchTimeout()
+        if (depth == 0):
+            return self.score(game, self)
+        legal_moves = game.get_legal_moves()
+        if not legal_moves:
+            return game.utility(self)
+
+        v = float("inf")
+        for move in legal_moves:
+            v = min(v, self.max_value(game.forecast_move(move), depth - 1, alpha, beta))
+            if (v <= alpha):
+                return v
+            beta = min(beta, v)
+        return v
