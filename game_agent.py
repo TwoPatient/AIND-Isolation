@@ -417,6 +417,8 @@ class AlphaBetaPlayer(IsolationPlayer):
 
         bestmove = (-1, -1)
 
+        if depth == 0:
+            return bestmove
         legal_moves = game.get_legal_moves()
         if not legal_moves:
             return bestmove
