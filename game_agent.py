@@ -325,8 +325,20 @@ class AlphaBetaPlayer(IsolationPlayer):
         """
         self.time_left = time_left
 
-        # TODO: finish this function!
-        raise NotImplementedError
+        # Initialize the best move so that this function returns something
+        # in case the search fails due to timeout
+        best_move = (-1, -1)
+
+        try:
+            # The try/except block will automatically catch the exception
+            # raised when the timer is about to expire.
+            return self.alphabeta(game, self.search_depth)
+
+        except SearchTimeout:
+            pass  # Handle any actions required after timeout as needed
+
+        # Return the best move from the last completed search iteration
+        return best_move
 
     def alphabeta(self, game, depth, alpha=float("-inf"), beta=float("inf")):
         """Implement depth-limited minimax search with alpha-beta pruning as
@@ -377,7 +389,6 @@ class AlphaBetaPlayer(IsolationPlayer):
             raise SearchTimeout()
 
         bestmove = (-1, -1)
-        bestvalue = float("-inf")
 
         legal_moves = game.get_legal_moves()
         if not legal_moves:
@@ -385,8 +396,8 @@ class AlphaBetaPlayer(IsolationPlayer):
 
         for move in legal_moves:
             v = self.min_value(game.forecast_move(move), depth - 1, alpha, beta)
-            if (v > bestvalue):
-                bestvalue, bestmove = v, move
+            if (v > alpha):
+                alpha, bestmove = v, move
         
         return bestmove
 
