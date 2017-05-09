@@ -246,6 +246,8 @@ class MinimaxPlayer(IsolationPlayer):
         if not legal_moves:
             return bestmove
 
+        bestmove = legal_moves[0]
+
         for move in legal_moves:
             v = self.min_value(game.forecast_move(move), depth - 1)
             if (v > bestvalue):
