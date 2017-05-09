@@ -42,10 +42,11 @@ def custom_score(game, player):
         return float("inf")
 
     move_count = game.move_count
+    blank_spaces = len(game.get_blank_spaces())
 
     own_moves = len(game.get_legal_moves(player))
     opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
-    return float(own_moves - (move_count*opp_moves))
+    return float(own_moves - ((move_count/blank_spaces)*opp_moves))
 
 
 def custom_score_2(game, player):
@@ -113,7 +114,7 @@ def custom_score_3(game, player):
 
     own_moves = len(game.get_legal_moves(player))
     opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
-    return float(own_moves / (own_moves + opp_moves))
+    return float((2*own_moves) - opp_moves)
 
 
 class IsolationPlayer:
@@ -355,6 +356,12 @@ class AlphaBetaPlayer(IsolationPlayer):
         # in case the search fails due to timeout
         best_move = (-1, -1)
 
+        legal_moves = game.get_legal_moves()
+        if not legal_moves:
+            return best_move
+
+        best_move = legal_moves[0]
+
         try:
             # The try/except block will automatically catch the exception
             # raised when the timer is about to expire.
@@ -419,12 +426,12 @@ class AlphaBetaPlayer(IsolationPlayer):
 
         bestmove = (-1, -1)
 
-        if depth == 0:
-            return bestmove
         legal_moves = game.get_legal_moves()
         if not legal_moves:
             return bestmove
 
+        bestmove = legal_moves[0]
+        
         for move in legal_moves:
             v = self.min_value(game.forecast_move(move), depth - 1, alpha, beta)
             if (v > alpha):
